@@ -1,6 +1,5 @@
 #!/bin/sh
 base="/etc/munin-node" # plugins should be installed at plugins.d inside $base
-base=.
 
 myname='openwrt-munin-node'
 ver='1.1'
