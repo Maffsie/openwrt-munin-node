@@ -10,4 +10,4 @@ leases.label leases"
 	exit 0
 fi
 
-echo "leases.value `cat /tmp/upnp.leases|/usr/bin/wc -l`
+echo "leases.value `cat /tmp/upnp.leases|/usr/bin/wc -l`"

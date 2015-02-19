@@ -6,7 +6,7 @@ myname='openwrt-munin-node'
 ver='1.1'
 host=`cat /proc/sys/kernel/hostname`
 modules=""
-register_module() { mn=`echo $1|sed 's/:$//'`;me=`echo $2|sed 's/:$//'`;shift 2;for f in config fetch;do rme=$me;[ "`echo $me|head -c1`" == "_" ]&&rme="$f$me";eval "${f}_$mn() { $rme `[ "$f" == "config" ]&&echo config` $@ \$@; };";done; }
+register_module() { mn=`echo $1|sed 's/:$//'`;me=`echo $2|sed 's/:$//'`;shift 2;for f in config fetch;do rme=$me;[ "`echo $me|head -c1`" == "_" ]&&rme="$f$me";eval "${f}_$mn() { $rme `[ "$f" == "config" -a "$me" == "$rme" ]&&echo config` $@ \$@; };";done; }
 is_registered() { [ ! -z "`command -v config_$1`" ] && [ ! -z "`command -v fetch_$1`" ] && return 0;return 1; }
 register_modules() { for mod in `ls -1 $base/plugins.d/*`;do [ -f $mod -a -x $mod ] || continue;modn=`basename $mod`;[ "$modn" != "if" ]&&modules="$modules $modn";register_module $modn $mod;done; }
 register_iface_modules() { for iface in `ifconfig|grep '^\w'|awk '{print $1}'`;do [ "$iface" == "lo" ] && continue; iface_mod=`echo $iface|sed -e 's/\./VLAN/;s/\-/_/'`;modules="$modules if_$iface_mod";register_module if_$iface_mod _if $iface;done; }
