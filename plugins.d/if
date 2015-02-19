@@ -1,0 +1,25 @@
+#!/bin/sh
+
+if [ "$1" == "config" ];then
+	echo "graph_order up down
+graph_title $2 traffic
+graph_args --base 1000
+graph_vlabel bits in (+) / out (-) per \${graph_period}
+graph_category network
+down.label bps
+down.type DERIVE
+down.min 0
+down.negative up
+down.cdef down,8,*
+up.label bps
+up.type DERIVE
+up.min 0
+up.graph no
+up.cdef up,8,*"
+	exit 0
+fi
+
+# mh..
+IINFO=`/bin/grep "$1:" /proc/net/dev|/usr/bin/cut -d: -f2|/bin/sed -e 's/  / /g'`
+echo "down.value `echo $IINFO|/usr/bin/cut -d\  -f1`"
+echo "up.value `echo $IINFO|/usr/bin/cut -d\  -f9`"

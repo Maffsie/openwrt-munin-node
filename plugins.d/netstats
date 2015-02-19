@@ -1,0 +1,30 @@
+#!/bin/sh
+
+if [ "$1" = "config" ]; then
+	echo "graph_title Active connections
+graph_args --base 1000 -l 0
+graph_scale no
+graph_vlabel current connections
+graph_category network
+graph_info This graph tracks current TCP, UDP, ICMP and other connections
+tcp.label TCP
+tcp.min 0
+udp.label UDP
+udp.min 0
+icmp.label ICMP
+icmp.min 0
+other.label other protos
+other.min 0"
+        exit 0
+fi
+
+TMP=`/bin/cat /proc/net/nf_conntrack`
+TCP=`echo "$TMP"|/bin/grep -c "\btcp\b"`
+UDP=`echo "$TMP"|/bin/grep -c "\budp\b"`
+ICMP=`echo "$TMP"|/bin/grep -c "\bicmp\b"`
+OTHER=$(($(echo "$TMP"|/usr/bin/wc -l) - $TCP - $UDP - $ICMP))
+
+echo "tcp.value $TCP
+udp.value $UDP
+icmp.value $ICMP
+other.value $OTHER"

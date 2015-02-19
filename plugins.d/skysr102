@@ -1,0 +1,72 @@
+#!/bin/sh
+
+# This plugin is only tested and guaranteed to work on the Sky SR102 ADSL modem-router.
+# This plugin requres opkg packages curl and perl to be installed.
+
+## CHANGE THESE TO MATCH YOUR SKY ROUTER'S IP ADDRESS AND ADMIN PASSWORD
+SKY_IP="192.168.0.1"
+SKY_PW="sky"
+## CHANGE THESE TO MATCH YOUR SKY ROUTER'S IP ADDRESS AND ADMIN PASSWORD
+
+if [ "$1" = "config" ]; then
+	echo "multigraph modem_atten
+graph_title ADSL Line Attenuation
+graph_args --upper-limit 31.5 -l 0
+graph_scale no
+graph_vlabel signal strength (dB)
+graph_category wan
+graph_info This graph maps ADSL line attenuation
+graph_order down up
+down.label downstream
+down.min 0
+up.label upstream
+up.min 0
+
+multigraph modem_noise
+graph_title ADSL Line Noise
+graph_args -l 0
+graph_vlabel noise strength (dB)
+graph_scale no
+graph_category wan
+graph_info This graph maps ADSL line noise
+graph_order down up
+down.label downstream
+down.min 0
+up.label upstream
+up.min 0
+
+multigraph modem_sync
+graph_title ADSL Sync Speed
+graph_args --base 1024 -l 0
+graph_scale no
+graph_vlabel kB/s
+graph_category wan
+graph_info This graph maps ADSL sync speed in kbps
+graph_order down up
+down.label kB/s down
+down.min 0
+up.label kB/s up
+up.min 0"
+        exit 0
+fi
+
+_get() { /usr/bin/curl -s --anyauth --user "admin:$SKY_PW" -A "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:31.0) Gecko/20100101 Firefox/31.0" $2 "http://$SKY_IP/$1" 2>&1; }
+TMP=`_get sky_system.html|/usr/bin/perl -ne '/Connection Speed.*?([0-9]+) kbps.*?([0-9]+) kbps.*?([0-9\.]+) dB.*?([0-9\.]+) dB.*?([0-9\.]+) dB.*?([0-9\.]+) dB/ and print "$1 $2 $3 $4 $5 $6"'`
+ sync_d=`echo $TMP|/usr/bin/awk '{print $1}'`
+ sync_u=`echo $TMP|/usr/bin/awk '{print $2}'`
+atten_d=`echo $TMP|/usr/bin/awk '{print $3}'`
+atten_u=`echo $TMP|/usr/bin/awk '{print $4}'`
+noise_d=`echo $TMP|/usr/bin/awk '{print $5}'`
+noise_u=`echo $TMP|/usr/bin/awk '{print $6}'`
+
+echo "multigraph modem_atten
+down.value $atten_d
+up.value $atten_u
+
+multigraph modem_noise
+down.value $noise_d
+up.value $noise_u
+
+multigraph modem_sync
+down.value $sync_d
+up.value $sync_u"

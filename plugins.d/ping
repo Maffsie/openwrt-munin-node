@@ -1,0 +1,30 @@
+#!/bin/sh
+
+# This plugin requires the opkg package perl to be installed.
+
+host="maff.scot"
+
+if [ "$1" == "config" ];then
+	echo "multigraph ping_lat
+graph_title ADSL latency to $host
+graph_scale no
+graph_args --base 1000 -l 0
+graph_vlabel latency (ms)
+graph_category network
+graph_info This graph shows latency statistics to $host
+ping.label $host
+ping.min 0
+
+multigraph ping_loss
+graph_title Packet loss to $host
+graph_scale no
+graph_args --base 1000 -l 0
+graph_vlabel loss (%)
+graph_category wan
+graph_info This graph shows packet loss encountered when pinging $host
+loss.label % lost
+loss.colour COLOUR15"
+	exit 0
+fi
+
+/bin/ping -c 2 $host|/usr/bin/perl -ne '/^round.*=.*?\/([0-9\.]+)\// and print "multigraph ping_lat\nping.value $1\n";/ ([0-9]+)% packet loss/ and print "multigraph ping_loss\nloss.value $1\n"'

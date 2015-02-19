@@ -1,0 +1,71 @@
+#!/bin/sh
+
+# this is kinda eh but i rewrote what i could
+extinfo=""
+[ `/bin/grep '^cpu ' /proc/stat|/usr/bin/awk '{print NF}'` -ge 8 ] && extinfo="iowait irq softirq"
+
+if [ "$1" == "config" ];then
+	NCPU=`/bin/grep -c '^processor' /proc/cpuinfo`
+	PERCENT=$(($NCPU * 100))
+	graphlimit=$PERCENT
+	SYSWARNING=$(($PERCENT * 30 / 100))
+	SYSCRITICAL=$(($PERCENT * 50 / 100))
+	USRWARNING=$(($PERCENT * 80 / 100))
+	echo "graph_title CPU usage
+graph_order system user nice idle $extinfo
+graph_args --base 1000 -r --lower-limit 0 --upper-limit $graphlimit
+graph_vlabel %
+graph_scale no
+graph_info This graph shows how CPU time is spent.
+graph_category system
+graph_period second
+system.label system
+system.draw AREA
+system.max 5000
+system.min 0
+system.type DERIVE
+system.warning $SYSWARNING
+system.critical $SYSCRITICAL
+system.info CPU time spent by the kernel in system activities
+user.label user
+user.draw STACK
+user.min 0
+user.max 5000
+user.warning $USRWARNING
+user.type DERIVE
+user.info CPU time spent by normal programs and daemons
+nice.label nice
+nice.draw STACK
+nice.min 0
+nice.max 5000
+nice.type DERIVE
+nice.info CPU time spent by nice(1)d programs
+idle.label idle
+idle.draw STACK
+idle.min 0
+idle.max 5000
+idle.type DERIVE
+idle.info Idle CPU time"
+	[ ! -z "$extinfo" ] && echo "iowait.label iowait
+iowait.draw STACK
+iowait.min 0
+iowait.max 5000
+iowait.type DERIVE
+iowait.info CPU time spent waiting for I/O operations to finish
+irq.label irq
+irq.draw STACK
+irq.min 0
+irq.max 5000
+irq.type DERIVE
+irq.info CPU time spent handling interrupts
+softirq.label softirq
+softirq.draw STACK
+softirq.min 0
+softirq.max 5000
+softirq.type DERIVE
+softirq.info CPU time spent handling 'batched' interrupts"
+	exit 0
+fi
+
+/bin/grep '^cpu ' /proc/stat|/usr/bin/awk '{print "user.value "$2"\nnice.value "$3"\nsystem.value "$4"\nidle.value "$5}'
+[ ! -z "$extinfo" ] && /bin/grep '^cpu ' /proc/stat|/usr/bin/awk '{print "iowait.value "$6"\nirq.value "$7"\nsoftirq.value "$8}'

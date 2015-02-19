@@ -1,0 +1,27 @@
+#!/bin/sh
+
+# this is pretty bad really but eh
+PARTS=`/bin/df -P|/bin/grep '^rootfs'|/bin/sed '/\/[a-z0-9]*$/!d;s/.* \([a-z0-9\/]\{1,\}\)$/\1/g'`
+
+if [ "$1" == "config" ];then
+	echo "graph_title Disk usage (percent)
+graph_args --upper-limit 100 -l 0
+graph_vlabel percent
+graph_category disk
+graph_info This graph shows disk usage on the machine."
+	for PART in $PARTS;do
+		PINFO=`/bin/df -P $PART|/usr/bin/tail -1`
+		PNAME=`echo $PINFO|/usr/bin/cut -d\  -f1|/bin/sed 's/\//_/g'`
+		echo "$PNAME.label $PART
+$PNAME.info $PNAME -> $PART
+$PNAME.warning 92
+$PNAME.critical 98"
+	done
+	exit 0
+fi
+
+for PART in $PARTS;do
+	PINFO=`/bin/df -P $PART|/usr/bin/tail -1`
+	PNAME=`echo $PINFO|/usr/bin/cut -d\  -f1|/bin/sed 's/[\/.-]/_/g'`
+	echo "$PNAME.value `echo $PINFO|/usr/bin/cut -d\  -f5|/bin/sed -e 's/\%//g'`"
+done

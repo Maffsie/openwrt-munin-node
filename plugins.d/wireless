@@ -1,0 +1,35 @@
+#!/bin/sh
+
+# This plugin requres the opkg packages iwinfo and perl to be installed, and assumes that all wifi interfaces will be in use and broadcasting an AP.
+
+wifs=`/usr/bin/iwinfo|/bin/egrep -o "^\w+"`
+if [ "$1" == "config" ];then
+	echo "multigraph wlan_assoc
+graph_title WLAN associations
+graph_vlabel clients
+graph_args -l 0
+graph_category network
+graph_scale no
+clients.label clients"
+	for int in $wifs;do
+		echo "multigraph wlan_$int
+graph_title $int AP Statistics
+graph_vlabel strength (dBm)
+graph_args -l 0
+graph_category network
+graph_scale no
+signal.label signal
+noise.label noise"
+		done
+	exit 0
+fi
+
+assoc=0
+for int in $wifs;do assoc=$(($assoc+$(/usr/bin/iwinfo $int assoclist|/bin/egrep "^\w"|/usr/bin/wc -l)));done
+
+echo "multigraph wlan_assoc
+clients.value $assoc"
+for int in $wifs;do
+	echo "multigraph wlan_$int"
+	/usr/bin/iwinfo $int info|/usr/bin/perl -ne '/Signal. (-[0-9]+) .* (-[0-9]+) dBm/ and print "signal.value ".($1+100)."\nnoise.value ".($2+100)."\n"'
+done

@@ -1,0 +1,13 @@
+#!/bin/sh
+
+if [ "$1" == "config" ];then
+	echo "graph_title UPnP Leases
+graph_vlabel leases
+graph_args -l 0
+graph_category network
+graph_scale no
+leases.label leases"
+	exit 0
+fi
+
+echo "leases.value `cat /tmp/upnp.leases|/usr/bin/wc -l`
