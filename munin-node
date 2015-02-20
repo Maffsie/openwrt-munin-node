@@ -17,13 +17,12 @@ echo "# munin node at $host"
 while read cmd mod;do
 	case $cmd in
 		list) echo $modules;;
-		config) is_registered $mod && config_$mod || echo "# Unknown plugin";;
-		fetch) is_registered $mod && fetch_$mod || echo "# Unknown plugin";;
-		nodes) echo $host;;
-		version) echo "munin node on $host version: $ver ($myname)";;
+		config) is_registered $mod && config_$mod || echo "# Unknown plugin";echo .;;
+		fetch) is_registered $mod && fetch_$mod || echo "# Unknown plugin";echo .;;
+		nodes) echo -e "$host\n.";;
+		version) echo -e "munin node on $host version: $ver ($myname)\n.";;
 		help) echo "# Commands: list, config, fetch, nodes, version, help, quit";;
 		quit) exit 0;;
 		*) echo "# Unknown command. Try help."
 	esac
-	echo '.'
 done
