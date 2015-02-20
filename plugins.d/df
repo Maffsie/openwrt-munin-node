@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# this module has been rewritten to avoid licensing conflicts.
+disks=`/bin/mount|/bin/egrep -v 'type ((debug|overlay|root|squash|sys|tmp)fs|proc|devpts)'|/usr/bin/awk '{print $1}'`
+if [ "$1" == "config" ];then
+	echo "graph_title Disk usage (percent)
+graph_args -u 100 -l 0
+graph_vlabel percent
+graph_category disk"
+	for disk in $disks;do echo "`echo $disk|/bin/sed -e 's/\W/_/g'`.label $disk";done
+	exit 0
+fi
+
+for disk in $disks;do echo "`echo $disk|/bin/sed -e 's/\W/_/g'`.value `/bin/df $disk|/usr/bin/tail -n1|/usr/bin/awk '{print $5}'|/bin/sed -e 's/\W//g'`";done

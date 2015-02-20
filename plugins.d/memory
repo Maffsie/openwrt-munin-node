@@ -1,0 +1,42 @@
+#!/bin/sh
+
+# this plugin was rewritten to avoid licensing conflicts.
+maxswap=`/usr/bin/free|/bin/grep '^Swap:'|/usr/bin/awk '{print $2}'`
+maxmem=`/usr/bin/free|/bin/grep '^Mem:'|/usr/bin/awk '{print $2}'`
+swap=0; [ $maxswap -ne 0 ] && swap=1
+
+if [ "$1" == "config" ];then
+	[ $maxswap -gt 0 ] && maxswap="-$maxswap"
+	echo "graph_title Memory usage
+graph_args --base 1024 -u $maxmem -l $maxswap
+graph_category system
+used.label in-use memory
+used.draw STACK
+cache.label caches
+cache.draw STACK
+buff.label buffers
+buff.draw STACK
+shared.label shared memory
+shared.draw STACK
+free.label available memory
+free.draw STACK"
+	[ $swap -eq 1 ] && echo "usedswap.label in-use swap
+usedswap.draw STACK
+usedswap.max 0
+cacheswap.label in-swap caches
+cacheswap.draw STACK
+cacheswap.max 0
+freeswap.label available swap
+freeswap.draw STACK
+freeswap.max 0"
+	exit 0
+fi
+
+echo "used.value `/usr/bin/free|grep '^Mem:'|/usr/bin/awk '{print $3'}`
+cache.value `/bin/grep '^Cached:' /proc/meminfo|/usr/bin/awk '{print $2}'`
+buff.value `/usr/bin/free|/bin/grep '^Mem:'|/usr/bin/awk '{print $6}'`
+shared.value `/usr/bin/free|/bin/grep '^Mem:'|/usr/bin/awk '{print $5}'`
+free.value `/usr/bin/free|/bin/grep '^Mem:'|/usr/bin/awk '{print $4}'`"
+[ $swap -eq 1 ] && echo "usedswap.value `/usr/bin/free|/bin/grep '^Swap:'|/usr/bin/awk '{print $3}'`
+cacheswap.value `/bin/grep '^SwapCached:' /proc/meminfo|/usr/bin/awk '{print $2}'`
+freeswap.value `/usr/bin/free|/bin/grep '^Swap:'|/usr/bin/awk '{print $4}'`"

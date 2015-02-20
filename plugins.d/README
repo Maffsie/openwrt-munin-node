@@ -1,21 +1,21 @@
 Plugins should be installed in this directory, and should have purely alphanumeric names. Plugins can, as with all munin-node implementations I've seen, be written in any supported language, however as this munin-node implementation specifically targets OpenWRT, sh-compatible/ash-specific shellscript is recommended.
 Plugins in this directory may be enabled/disabled as needed by either adding or removing the executable permission (chmod +x, chmod -x).
 
-The following plugins were originally provided with muninlite (http://sourceforge.net/projects/muninlite/) and have been altered to varying degrees to act as generic plugins. These plugins were originally bundled with this project, however due to license incompatibilities (GPLv2 doesn't seem to permit me to license my project under BSD 3-Clause while including GPLv2-licensed plugins, even modified to some degree, thus there will be no non-BSD code). They will be re-included once original replacements have been written:
-- cpu
-- df
-- if
+The following plugins were originally included in modified form from plugins shipped with the muninlite project, however they have been removed due to licensing incompatibilities and a lack of desire to rewrite them such that they could be licensed under 3-Clause BSD:
 - interrupts
 - irqstats
-- memory
-- uptime
 
 The following plugins have been written to more specifically monitor the functions of an OpenWRT router installation, and are licensed under the 3-clause BSD license:
+- cpu       - Tracks CPU usage
+- df        - Tracks disk usage
 - dhcp      - Tracks the current count of valid DHCP leases.
 - dns       - Tracks caching/forwarding statistics in the dnsmasq caching resolver
+- if        - Tracks bandwidth usage for interfaces on the system
 - load      - Tracks system load for the past one, five and fifteen minutes, as well as active and running processes.
+- memory    - Tracks memory usage
 - netstats  - Tracks currently-open TCP, UDP, ICMP and other connections. A netstats plugin is provided with muninlite, however it is related only in name to this.
 - ping      - Tracks outbound latency and packet loss to a single host, intended to measure outbound connection quality/uptime through an ISP.
 - skysr102  - Tracks ADSL line attenuation/noise and sync speeds. This plugin is specific to the Sky SR102 modem-router and may not work on other devices.
 - upnp      - Tracks the current count of valid UPnP forward leases
+- uptime    - Tracks uptime statistics
 - wireless  - Tracks total connected stations across all wireless interfaces, as well as signal and noise levels for each interface/AP.

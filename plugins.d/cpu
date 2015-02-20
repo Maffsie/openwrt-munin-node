@@ -1,0 +1,36 @@
+#!/bin/sh
+
+# this module has been rewritten to avoid licensing issues. the muninlite project's cpu plugin will work here with minimal alterations should you wish.
+if [ "$1" == "config" ];then
+	echo "graph_title CPU usage
+graph_order system user nice idle iowait irq softirq
+graph_vlabel percent
+graph_args -u 100 -l 0
+graph_scale no
+graph_category system
+graph_period second
+sys.label system
+sys.min 0
+sys.type COUNTER
+usr.label user
+usr.min 0
+usr.type COUNTER
+nice.label nice
+nice.min 0
+nice.type COUNTER
+idle.label idle
+idle.min 0
+idle.type COUNTER
+iow.label io wait
+iow.min 0
+iow.type COUNTER
+irq.label irq
+irq.min 0
+irq.type COUNTER
+sirq.label soft-irq
+sirq.min 0
+sirq.type COUNTER"
+	exit 0
+fi
+
+/bin/grep '^cpu ' /proc/stat|/usr/bin/awk '{print "usr.value "$2"\nnice.value "$3"\nsys.value "$4"\nidle.value "$5"\niow.value "$6"\nirq.value "$7"\nsirq.value "$8}'

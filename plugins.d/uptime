@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# this plugin has been rewritten to avoid licensing conflicts.
+if [ "$1" == "config" ]; then
+	echo "graph_title Uptime
+graph_args --base 1000 -l 0
+graph_vlabel days
+uptime.label uptime
+uptime.draw AREA"
+	exit 0
+fi
+
+/usr/bin/awk '{print "uptime.value",$1/86400}' /proc/uptime
