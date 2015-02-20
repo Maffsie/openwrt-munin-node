@@ -1,15 +1,13 @@
 Plugins should be installed in this directory, and should have purely alphanumeric names. Plugins can, as with all munin-node implementations I've seen, be written in any supported language, however as this munin-node implementation specifically targets OpenWRT, sh-compatible/ash-specific shellscript is recommended.
 Plugins in this directory may be enabled/disabled as needed by either adding or removing the executable permission (chmod +x, chmod -x).
 
-The following plugins were originally provided with muninlite (http://sourceforge.net/projects/muninlite/) and have been altered to varying degrees to act as generic plugins. These plugins and the muninlite project are licensed under the GPLv2 and are included for completion's sake.
+The following plugins were originally provided with muninlite (http://sourceforge.net/projects/muninlite/) and have been altered to varying degrees to act as generic plugins. These plugins were originally bundled with this project, however due to license incompatibilities (GPLv2 doesn't seem to permit me to license my project under BSD 3-Clause while including GPLv2-licensed plugins, even modified to some degree, thus there will be no non-BSD code). They will be re-included once original replacements have been written:
+- cpu
 - df
 - if
 - interrupts
 - irqstats
 - memory
-
-The following plugins were originally provided with muninlite, but have been largely rewritten and may resemble their original in graph configuration only:
-- cpu
 - uptime
 
 The following plugins have been written to more specifically monitor the functions of an OpenWRT router installation, and are licensed under the 3-clause BSD license:

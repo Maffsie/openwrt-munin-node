@@ -2,7 +2,7 @@
 openwrt-oriented munin-node implementation inspired by muninlite
 
 ## Quick installation guide
-Install `munin-node`:
+Install `munin-node` and the bundled plugins:
 
 ```
 mkdir -p /usr/local/bin /etc/munin-node
