@@ -15,6 +15,7 @@ is_registered 'if' && register_iface_modules
 
 echo "# munin node at $host"
 while read cmd mod;do
+	cmd=${cmd%[-[:space:]]};mod=${mod%[-[:space:]]}
 	case $cmd in
 		list) echo $modules;;
 		config) is_registered $mod && config_$mod || echo "# Unknown plugin";echo .;;
