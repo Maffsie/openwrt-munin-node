@@ -2,7 +2,7 @@
 base="/etc/munin-node" # plugins should be installed at plugins.d inside $base
 
 myname='openwrt-munin-node'
-ver='1.1'
+ver='1.2'
 host=`cat /proc/sys/kernel/hostname`
 modules=""
 register_module() { mn=`echo $1|sed 's/:$//'`;me=`echo $2|sed 's/:$//'`;shift 2;for f in config fetch;do rme=$me;[ "`echo $me|head -c1`" == "_" ]&&rme="$f$me";eval "${f}_$mn() { $rme `[ "$f" == "config" -a "$me" == "$rme" ]&&echo config` $@ \$@; };";done; }
