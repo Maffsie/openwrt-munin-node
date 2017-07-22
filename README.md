@@ -5,16 +5,18 @@ openwrt-oriented munin-node implementation inspired by muninlite
 Install `munin-node` and the bundled plugins:
 
 ```
+opkg update
+opkg install curl
 mkdir -p /usr/local/bin /etc/munin-node
 cd /etc/munin-node
-wget -O munin-node.tar.gz https://github.com/MaffC/openwrt-munin-node/archive/master.tar.gz
-tar xzf munin-node.tar.gz plugins.d
-tar xzf munin-node.tar.gz xinetd-munin-node.conf
-tar xzf munin-node.tar.gz munin-node -C /usr/local/bin/
+curl -Lko munin-node.tar.gz https://github.com/MaffC/openwrt-munin-node/archive/master.tar.gz
+tar xzf munin-node.tar.gz openwrt-munin-node-master/plugins.d
+tar xzf munin-node.tar.gz openwrt-munin-node-master/xinetd-munin-node.conf
+tar xzf munin-node.tar.gz openwrt-munin-node-master/munin-node -C /usr/local/bin/
 rm munin-node.tar.gz
 ```
 
-Install dependencies for included plugins as needed (note xinetd is not a plugin dependency and is needed for general operation unless you have another inetd):
+Install dependencies for included plugins as needed (note xinetd is not a plugin dependency and is needed for general operation unless you have another inetd; curl is a plugin dependency but is installed if you follow the above quick installation guide):
 
 ```
 opkg update
