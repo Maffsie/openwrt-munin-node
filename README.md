@@ -1,6 +1,9 @@
 # openwrt-munin-node
 openwrt-oriented munin-node implementation inspired by muninlite
 
+## Notice - out-of-date
+This package was written some years ago, and is no longer in use, nor maintained. It remains online in the event that it can help someone else.
+
 ## Quick installation guide
 Install `munin-node` and the bundled plugins:
 
